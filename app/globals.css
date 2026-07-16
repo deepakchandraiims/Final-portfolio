@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root, .dark {
+    --background: 223 28% 5%;        /* #090B10 */
+    --foreground: 44 35% 94%;        /* #F5F2EA warm white */
+    --card: 215 26% 9%;              /* #11161D */
+    --card-foreground: 44 35% 94%;
+    --popover: 215 26% 9%;
+    --popover-foreground: 44 35% 94%;
+    --primary: 39 46% 60%;           /* #C8A76A accent gold */
+    --primary-foreground: 223 28% 5%;
+    --secondary: 215 26% 9%;
+    --secondary-foreground: 44 35% 94%;
+    --muted: 215 20% 14%;
+    --muted-foreground: 217 6% 57%;  /* #8B9098 */
+    --accent: 215 20% 14%;
+    --accent-foreground: 44 35% 94%;
+    --destructive: 4 86% 58%;        /* #F04438 */
+    --destructive-foreground: 44 35% 94%;
+    --border: 215 18% 15%;
+    --input: 215 18% 15%;
+    --ring: 39 46% 60%;
+    --radius: 0.6rem;
+
+    /* Institutional accent system */
+    --gold: 39 46% 60%;              /* #C8A76A */
+    --gold-soft: 39 52% 72%;
+    --terminal: 150 66% 52%;         /* #32D583 success */
+    --terminal-soft: 150 55% 62%;
+    --slate: 217 6% 57%;             /* #8B9098 */
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  html, body { @apply bg-background text-foreground; }
+  html {
+    scroll-behavior: smooth;
+    /* The nav is fixed at 56px. Without this, every in-page anchor lands
+       UNDER the nav and the target heading is invisible — which reads as
+       "the page is stuck". 72px = nav height + breathing room. */
+    scroll-padding-top: 72px;
+  }
+  /* Belt-and-braces for programmatic scrollIntoView(), which ignores
+     scroll-padding on some engines. */
+  section[id], [data-anchor] { scroll-margin-top: 72px; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+  /* Tabular, aligned numerals everywhere numbers matter */
+  .tnum { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+}
+
+@layer utilities {
+  .font-serif   { font-family: var(--font-serif), 'Fraunces', Georgia, 'Times New Roman', serif; }
+  .font-display { font-family: var(--font-serif), 'Fraunces', Georgia, serif; }
+  .font-sans    { font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, sans-serif; }
+  .font-mono    { font-family: var(--font-mono), 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace; }
+
+  /* Very subtle gold/green wash — no violet, no neon */
+  .noise-bg {
+    background-image:
+      radial-gradient(1100px 520px at 18% 0%, hsl(var(--gold) / 0.04), transparent 62%),
+      radial-gradient(820px 460px at 100% 14%, hsl(var(--terminal) / 0.02), transparent 62%);
+  }
+
+  /* Almost-invisible engineering grid */
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at 50% 30%, black 40%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse at 50% 30%, black 40%, transparent 80%);
+  }
+
+  /* Faint film-grain texture (institutional, not decorative) */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Restrained glass — used sparingly (nav / overlays only) */
+  .glass {
+    background: rgba(16, 16, 18, 0.6);
+    backdrop-filter: blur(16px) saturate(1.1);
+    -webkit-backdrop-filter: blur(16px) saturate(1.1);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .gold-gradient-text {
+    background: linear-gradient(180deg, #E4CB96 0%, #C8A76A 58%, #9C7F49 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hover-lift { transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 400ms; }
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6), 0 0 0 1px hsl(var(--gold) / 0.15);
+  }
+
+  /* Hairline gold→slate border — violet removed */
+  .shine-border { position: relative; }
+  .shine-border::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(140deg, hsl(var(--gold) / 0.5), rgba(255,255,255,0.05) 34%, hsl(var(--slate) / 0.35) 72%, rgba(255,255,255,0.04));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-marquee { animation: marquee 40s linear infinite; }
+
+  @keyframes glow-pulse {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 0.6; }
+  }
+  .animate-glow { animation: glow-pulse 5s ease-in-out infinite; }
+}
+
+@layer utilities {
+  /* Barely-visible financial substrate: DCF / multiples / terminal numerals.
+     Opacity ~1.5% — meant to be felt, not read. */
+  .fin-bg { position: relative; }
+  .fin-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.018;
+    background-repeat: repeat;
+    background-size: 760px 420px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='760' height='420'%3E%3Cg fill='%23F5F2EA' font-family='monospace' font-size='13'%3E%3Ctext x='10' y='24'%3EEV = %CE%A3 FCF%E2%82%9C / (1+WACC)%E2%81%BF + TV%3C/text%3E%3Ctext x='430' y='24'%3EEV/EBITDA 14.6x%3C/text%3E%3Ctext x='10' y='58'%3ETV = FCF%E2%82%99(1+g) / (WACC - g)%3C/text%3E%3Ctext x='430' y='58'%3EP/E 22.4x  EV/S 6.1x%3C/text%3E%3Ctext x='10' y='92'%3EWACC = E/V%C2%B7Re + D/V%C2%B7Rd%C2%B7(1-Tc)%3C/text%3E%3Ctext x='470' y='92'%3EIRR 24.8%25%3C/text%3E%3Ctext x='10' y='126'%3ERe = Rf + %CE%B2(Rm - Rf)%3C/text%3E%3Ctext x='340' y='126'%3EMoIC 2.4x   DSCR 1.8x%3C/text%3E%3Ctext x='10' y='160'%3ENDR 118%25  Rule of 40 = 52%3C/text%3E%3Ctext x='380' y='160'%3ELTV/CAC 4.2x%3C/text%3E%3Ctext x='10' y='194'%3ENet Debt / EBITDA 3.1x%3C/text%3E%3Ctext x='330' y='194'%3EFCF Yield 5.4%25%3C/text%3E%3Ctext x='10' y='228'%3EROIC 18.2%25   ROE 21.7%25%3C/text%3E%3Ctext x='350' y='228'%3ETerminal g 2.5%25%3C/text%3E%3Ctext x='10' y='262'%3EDCF %E2%80%94 SENSITIVITY  WACC 10.5%25 %E2%80%93 13.5%25%3C/text%3E%3Ctext x='10' y='296'%3EComps: 18 peers   Precedents: 12 txns%3C/text%3E%3Ctext x='420' y='296'%3EEBITDA margin 31%25%3C/text%3E%3Ctext x='10' y='330'%3EPurchase Price Allocation / Goodwill%3C/text%3E%3Ctext x='400' y='330'%3EAccretion +4.2%25%3C/text%3E%3Ctext x='10' y='364'%3EForm S-1 / DRHP / Item 7 MD%26A%3C/text%3E%3Ctext x='380' y='364'%3ESynergy bridge 1.8x%3C/text%3E%3Ctext x='10' y='398'%3EFootball field: 340 %E2%80%93 410%3C/text%3E%3Ctext x='330' y='398'%3EBid 210 %E2%86%92 36 %E2%86%92 14 %E2%86%92 3%3C/text%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* Institutional focus ring for keyboard a11y */
+  .focus-ring:focus-visible {
+    outline: 2px solid hsl(var(--gold) / 0.6);
+    outline-offset: 2px;
+  }
+}
